@@ -1,5 +1,7 @@
 package com.example.android.bakingapp.ui;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +20,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.adapter.MainActivityAdapter;
+import com.example.android.bakingapp.interfaces.CommunicateFragments;
 import com.example.android.bakingapp.model.Recipe;
 import com.example.android.bakingapp.model.Steps;
 import com.google.gson.Gson;
@@ -41,6 +44,9 @@ public class RecipeMainFragment extends Fragment {
     private List<Recipe> mListRecipe;
 
     @BindView(R.id.recipe_rv) RecyclerView mRecyclerRecipes;
+
+    Activity activity;
+    CommunicateFragments communicateFragments;
 
     public RecipeMainFragment() {
     }
@@ -70,13 +76,24 @@ public class RecipeMainFragment extends Fragment {
         mMainActivityAdapter.setOnclickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Timber.d("receta seleccionada: "  );
+
                 Toast.makeText(getContext(), "ha seleccionado la receta: " + mListRecipe.get(mRecyclerRecipes.getChildAdapterPosition(view)).getRecipeName()
                         , Toast.LENGTH_SHORT).show();
+                communicateFragments.sendRecipe
+                        (mListRecipe.get(mRecyclerRecipes.getChildAdapterPosition(view)));
             }
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity) {
+            this.activity = (Activity) context;
+            communicateFragments = (CommunicateFragments) this.activity;
+        }
     }
 
     private void loadJsonData() {

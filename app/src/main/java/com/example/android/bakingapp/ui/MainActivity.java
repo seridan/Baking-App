@@ -18,6 +18,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.adapter.MainActivityAdapter;
+import com.example.android.bakingapp.interfaces.CommunicateFragments;
 import com.example.android.bakingapp.model.Recipe;
 import com.example.android.bakingapp.utilities.JsonUtils;
 import com.google.gson.Gson;
@@ -37,9 +38,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CommunicateFragments {
 
-
+    private static final String ARG_RECIPE = "recipe";
+    DetailFragment detailFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,4 +55,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void sendRecipe(Recipe recipe) {
+
+        detailFragment = new DetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_RECIPE, recipe);
+        detailFragment.setArguments(bundle);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.recipe_list_fragment, detailFragment)
+                .addToBackStack(null)
+                .commit();
+
+    }
 }
