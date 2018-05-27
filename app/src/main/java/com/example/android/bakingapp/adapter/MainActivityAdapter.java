@@ -13,35 +13,29 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivityAdapter
-        extends RecyclerView.Adapter<MainActivityAdapter.BakingAppViewHolder>{
+        extends RecyclerView.Adapter<MainActivityAdapter.BakingAppViewHolder>
+        implements View.OnClickListener{
 
     private List<Recipe> mRecipeList;
-    final private ListItemClickListener mOnClickListener;
+    private View.OnClickListener listener;
 
-    /**
-     * Handling the onClick items in the recycler view
-     */
-    public interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex);
 
-    }
-
-    public MainActivityAdapter(List<Recipe> recipeList, ListItemClickListener listener) {
+    public MainActivityAdapter(List<Recipe> recipeList) {
         mRecipeList = recipeList;
-        mOnClickListener = listener;
+
     }
 
     @Override
     public MainActivityAdapter.BakingAppViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.recipe_item_list;
+        int layoutIdForListItem = R.layout.fragment_recipe_list_item_list;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         BakingAppViewHolder viewHolder = new BakingAppViewHolder(view);
-
+        view.setOnClickListener(this);
         return viewHolder;
     }
 
@@ -58,22 +52,27 @@ public class MainActivityAdapter
        return mRecipeList.size();
     }
 
-    public class BakingAppViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    public void setOnclickListener(View.OnClickListener listener){
+        this.listener = listener;
+    }
 
-        @BindView(R.id.tv_item_recipe) TextView listItemRecipeTv;
+    @Override
+    public void onClick(View view) {
+        if (listener != null) {
+            listener.onClick(view);
+        }
+
+    }
+
+    public class BakingAppViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.tv_item_detail) TextView listItemRecipeTv;
 
         public BakingAppViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
-        }
 
-        @Override
-        public void onClick(View view) {
-            int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickedPosition);
         }
     }
 

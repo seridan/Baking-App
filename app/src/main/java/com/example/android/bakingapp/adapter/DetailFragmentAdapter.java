@@ -38,7 +38,7 @@ public class DetailFragmentAdapter
     public FragmentDetailViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.fragment_detail_item_list;
+        int layoutIdForListItem = R.layout.fragment_recipe_list_item_list;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
