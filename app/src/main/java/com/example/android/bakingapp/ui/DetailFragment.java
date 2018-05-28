@@ -77,10 +77,10 @@ public class DetailFragment extends Fragment {
         step = view.findViewById(R.id.step_tv);
 
         Bundle recipeBundle = getArguments();
-        Recipe selectedRecipe = new Recipe();
+        Recipe selectedRecipe;
 
         if (recipeBundle != null){
-            selectedRecipe = (Recipe) recipeBundle.getParcelable(ARG_RECIPE);
+            selectedRecipe = recipeBundle.getParcelable(ARG_RECIPE);
             step.setText(selectedRecipe.getSteps().get(2).getShortDescription());
         }
         return view;
