@@ -16,22 +16,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailFragmentAdapter
-        extends RecyclerView.Adapter<DetailFragmentAdapter.FragmentDetailViewHolder> {
+        extends RecyclerView.Adapter<DetailFragmentAdapter.FragmentDetailViewHolder>
+        implements View.OnClickListener{
 
     private List<Steps> mStepList;
-    final private ListItemClickListener mOnClickListener;
+    private View.OnClickListener mListener;
 
-    /**
-     * Handling the onClick items in the recycler view
-     */
-    public interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex);
 
-    }
 
-    public DetailFragmentAdapter(List<Steps> stepList, ListItemClickListener listener) {
+    public DetailFragmentAdapter(List<Steps> stepList) {
         mStepList = stepList;
-        mOnClickListener = listener;
+
     }
 
     @Override
@@ -44,6 +39,7 @@ public class DetailFragmentAdapter
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         FragmentDetailViewHolder viewHolder = new FragmentDetailViewHolder(view);
+        view.setOnClickListener(this);
 
         return viewHolder;
     }
@@ -60,21 +56,32 @@ public class DetailFragmentAdapter
         return mStepList.size();
     }
 
-    public class FragmentDetailViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    public void setOnclickListener(View.OnClickListener listener){
+        mListener = listener;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (mListener != null) {
+            mListener.onClick(view);
+        }
+    }
+
+    public class FragmentDetailViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_item_detail) TextView listItemDetailTv;
 
         public FragmentDetailViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
+
         }
 
-        @Override
-        public void onClick(View view) {
-            int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickedPosition);
-        }
+    }
+
+    public void setStepList(List<Steps> recipeSteps) {
+        mStepList = recipeSteps;
+        notifyDataSetChanged();
+
     }
 }

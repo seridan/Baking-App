@@ -22,7 +22,6 @@ import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.adapter.MainActivityAdapter;
 import com.example.android.bakingapp.interfaces.CommunicateFragments;
 import com.example.android.bakingapp.model.Recipe;
-import com.example.android.bakingapp.model.Steps;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -45,7 +44,7 @@ public class RecipeMainFragment extends Fragment {
 
     @BindView(R.id.recipe_rv) RecyclerView mRecyclerRecipes;
 
-    Activity activity;
+    Activity mActivity;
     CommunicateFragments communicateFragments;
 
     public RecipeMainFragment() {
@@ -77,8 +76,9 @@ public class RecipeMainFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getContext(), "ha seleccionado la receta: " + mListRecipe.get(mRecyclerRecipes.getChildAdapterPosition(view)).getRecipeName()
-                        , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "ha seleccionado la receta: " + mListRecipe.get
+                        (mRecyclerRecipes.getChildAdapterPosition(view)).getRecipeName(), Toast.LENGTH_SHORT).show();
+
                 communicateFragments.sendRecipe
                         (mListRecipe.get(mRecyclerRecipes.getChildAdapterPosition(view)));
             }
@@ -91,8 +91,8 @@ public class RecipeMainFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof Activity) {
-            this.activity = (Activity) context;
-            communicateFragments = (CommunicateFragments) this.activity;
+            mActivity = (Activity) context;
+            communicateFragments = (CommunicateFragments) mActivity;
         }
     }
 

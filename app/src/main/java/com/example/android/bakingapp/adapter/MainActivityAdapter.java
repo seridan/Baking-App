@@ -17,7 +17,7 @@ public class MainActivityAdapter
         implements View.OnClickListener{
 
     private List<Recipe> mRecipeList;
-    private View.OnClickListener listener;
+    private View.OnClickListener mListener;
 
 
     public MainActivityAdapter(List<Recipe> recipeList) {
@@ -53,13 +53,13 @@ public class MainActivityAdapter
     }
 
     public void setOnclickListener(View.OnClickListener listener){
-        this.listener = listener;
+        mListener = listener;
     }
 
     @Override
     public void onClick(View view) {
-        if (listener != null) {
-            listener.onClick(view);
+        if (mListener != null) {
+            mListener.onClick(view);
         }
 
     }

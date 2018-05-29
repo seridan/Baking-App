@@ -4,14 +4,25 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.bakingapp.R;
+import com.example.android.bakingapp.adapter.DetailFragmentAdapter;
 import com.example.android.bakingapp.model.Recipe;
 import com.example.android.bakingapp.model.Steps;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,8 +46,11 @@ public class DetailFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private Recipe selectedRecipe;
+    private List<Steps> mSteps;
+    private DetailFragmentAdapter mDetailFragmentAdapter;
 
-    private TextView step;
+    @BindView(R.id.step_rv) RecyclerView mRecyclerSteps;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -73,17 +87,39 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_detail, container, false);
-        step = view.findViewById(R.id.step_tv);
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+        mSteps = new ArrayList<>();
+
+        ButterKnife.bind(this, rootView);
+        Timber.plant(new Timber.DebugTree());
+
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+
+        mRecyclerSteps.setLayoutManager(layoutManager);
+        mRecyclerSteps.setHasFixedSize(true);
+        mDetailFragmentAdapter = new DetailFragmentAdapter(mSteps);
+        mRecyclerSteps.setAdapter(mDetailFragmentAdapter);
 
         Bundle recipeBundle = getArguments();
-        Recipe selectedRecipe;
+
+        mDetailFragmentAdapter.setOnclickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "ha seleccionado el paso: " + mSteps.get
+                        (mRecyclerSteps.getChildAdapterPosition(view)).getShortDescription(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         if (recipeBundle != null){
             selectedRecipe = recipeBundle.getParcelable(ARG_RECIPE);
-            step.setText(selectedRecipe.getSteps().get(2).getShortDescription());
+            if (selectedRecipe != null) {
+                mSteps = selectedRecipe.getSteps();
+                mDetailFragmentAdapter.setStepList(mSteps);
+            }
         }
-        return view;
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
