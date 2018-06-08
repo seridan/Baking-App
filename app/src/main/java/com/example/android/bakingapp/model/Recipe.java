@@ -21,7 +21,7 @@ public class Recipe implements Parcelable {
     private String mRecipeImageUrl;
 
     private int servings;
-    private List<Steps> steps;
+    private List<Step> steps;
     private List<Ingredients> ingredients;
 
 
@@ -88,11 +88,11 @@ public class Recipe implements Parcelable {
         this.ingredients = ingredients;
     }
 
-    public List<Steps> getSteps() {
+    public List<Step> getSteps() {
         return steps;
     }
 
-    public void setSteps(List<Steps> steps) {
+    public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
 

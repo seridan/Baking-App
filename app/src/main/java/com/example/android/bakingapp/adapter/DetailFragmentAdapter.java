@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.bakingapp.R;
-import com.example.android.bakingapp.model.Steps;
+import com.example.android.bakingapp.model.Step;
 
 import java.util.List;
 
@@ -19,12 +19,12 @@ public class DetailFragmentAdapter
         extends RecyclerView.Adapter<DetailFragmentAdapter.FragmentDetailViewHolder>
         implements View.OnClickListener{
 
-    private List<Steps> mStepList;
+    private List<Step> mStepList;
     private View.OnClickListener mListener;
 
 
 
-    public DetailFragmentAdapter(List<Steps> stepList) {
+    public DetailFragmentAdapter(List<Step> stepList) {
         mStepList = stepList;
 
     }
@@ -79,7 +79,7 @@ public class DetailFragmentAdapter
 
     }
 
-    public void setStepList(List<Steps> recipeSteps) {
+    public void setStepList(List<Step> recipeSteps) {
         mStepList = recipeSteps;
         notifyDataSetChanged();
 

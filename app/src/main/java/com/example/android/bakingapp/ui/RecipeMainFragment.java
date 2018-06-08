@@ -20,7 +20,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.adapter.MainActivityAdapter;
-import com.example.android.bakingapp.interfaces.CommunicateFragments;
+import com.example.android.bakingapp.interfaces.CommunicateFragmentRecipe;
 import com.example.android.bakingapp.model.Recipe;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -41,11 +41,13 @@ public class RecipeMainFragment extends Fragment {
     private RequestQueue mRequestQueue;
     private MainActivityAdapter mMainActivityAdapter;
     private List<Recipe> mListRecipe;
+    private static final String URL_JSON
+            = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json#";
 
     @BindView(R.id.recipe_rv) RecyclerView mRecyclerRecipes;
 
     Activity mActivity;
-    CommunicateFragments communicateFragments;
+    CommunicateFragmentRecipe communicateFragmentRecipe;
 
     public RecipeMainFragment() {
     }
@@ -79,7 +81,7 @@ public class RecipeMainFragment extends Fragment {
                 Toast.makeText(getContext(), "ha seleccionado la receta: " + mListRecipe.get
                         (mRecyclerRecipes.getChildAdapterPosition(view)).getRecipeName(), Toast.LENGTH_SHORT).show();
 
-                communicateFragments.sendRecipe
+                communicateFragmentRecipe.sendRecipe
                         (mListRecipe.get(mRecyclerRecipes.getChildAdapterPosition(view)));
             }
         });
@@ -92,16 +94,15 @@ public class RecipeMainFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof Activity) {
             mActivity = (Activity) context;
-            communicateFragments = (CommunicateFragments) mActivity;
+            communicateFragmentRecipe = (CommunicateFragmentRecipe) mActivity;
         }
     }
 
     private void loadJsonData() {
-        String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json#";
 
         mJsonArrayRequest = new JsonArrayRequest
                 (Request.Method.GET,
-                        url,
+                        URL_JSON,
                         null,
                         new Response.Listener<JSONArray>() {
                             @Override
