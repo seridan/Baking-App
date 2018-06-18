@@ -27,8 +27,7 @@ import timber.log.Timber;
 public class DetailFragment extends Fragment {
 
     private static final String ARG_RECIPE = "recipe";
-    private static final String ARG_STEP = "step";
-    private static final String ARG_VIDEO = "video";
+
     private Recipe selectedRecipe;
     private List<Step> mListSteps;
 
@@ -65,7 +64,7 @@ public class DetailFragment extends Fragment {
 
         if (recipeBundle != null){
             //Almaceno en el objeto de la clase Recipe, el objeto de la misma clase que he recibido
-            //a través del bundle y que como key es la constante ARG_RECIPE, que debe de ser la misma
+            //a través de la interfaz desde la clase mainActivity y que como key es la constante ARG_RECIPE, que debe de ser la misma
             //que se le asignó desde el origen.
             selectedRecipe = recipeBundle.getParcelable(ARG_RECIPE);
             if (selectedRecipe != null) {
@@ -89,6 +88,8 @@ public class DetailFragment extends Fragment {
         return rootView;
     }
 
+
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -96,38 +97,6 @@ public class DetailFragment extends Fragment {
             mActivity = (Activity) context;
             comunicateFragmentStep = (ComunicateFragmentStep) mActivity;
         }
-    }
-
-    private void setArgStep (View view) {
-
-        //Obtengo el paso seleccionado y lo almaceno en la variable de tipo string.
-        String selectedStepDescription = mListSteps.get
-                (mRecyclerSteps.getChildAdapterPosition(view)).getDescription();
-
-        //Obtengo la url del video seleccionado y lo almaceno en la variable de tipo string.
-        String selectedStepVideoUrl = mListSteps.get
-                (mRecyclerSteps.getChildAdapterPosition(view)).getVideoURL();
-        //Compruebo que la url no sea null, si lo es obtengo la url del campo thumbnailUrl.
-        if (selectedStepVideoUrl == null || selectedStepVideoUrl.isEmpty()){
-            selectedStepVideoUrl = mListSteps.get
-                    (mRecyclerSteps.getChildAdapterPosition(view)).getThumbnailURL();
-        }
-        //Creo un nuevo bundle para almacenar el paso y el video seleccionados
-        Bundle bundleStep = new Bundle();
-        //Añado el paso seleccionado al bundle.
-        bundleStep.putString(ARG_STEP, selectedStepDescription);
-        //Añado el video seleccionado al bundle.
-        bundleStep.putString(ARG_VIDEO, selectedStepVideoUrl);
-        //Creo un nuevo fragment del tipo Media que es el que quiero que se muestre
-        MediaFragment mediaFragment = new MediaFragment();
-        //Inserto el bundle como argumentos.
-        mediaFragment.setArguments(bundleStep);
-        //Por medio de getActivity puedo acceder al fragmentManager
-        getActivity().getSupportFragmentManager().beginTransaction()
-                //Como contenedor utilizo el mismo que tengo en el layout del activity_main.xml
-                .replace(R.id.fragment_list_container, mediaFragment)
-                .addToBackStack(null)
-                .commit();
     }
 
 }

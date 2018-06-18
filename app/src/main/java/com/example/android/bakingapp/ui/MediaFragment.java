@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,7 @@ public class MediaFragment extends Fragment {
     private int stepId;
     private Step selectedStep;
     private String selectedStepDescription;
+    private String selectedStepShortDescription;
     private String selectedStepVideoUrl;
     private Recipe selectedRecipe;
     private static final String ARG_RECIPE = "recipe";
@@ -53,11 +56,17 @@ public class MediaFragment extends Fragment {
     private int currentWindow = 0;
     private long playbackPosition = 0;
 
+    @BindView(R.id.step_short_description_tv)
+    TextView mStepShortDescriptionTv;
+
     @BindView(R.id.step_instruction_tv)
     TextView mStepDescriptionTv;
 
     @BindView(R.id.playerView)
     PlayerView mPlayerView;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     private SimpleExoPlayer mExoplayer;
 
@@ -72,16 +81,21 @@ public class MediaFragment extends Fragment {
 
         ButterKnife.bind(this, rootView);
 
-
+        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
         final Bundle stepBundle = getArguments();
 
         if (stepBundle != null) {
 
             stepId = stepBundle.getInt(ARG_STEP_ID);
             mSteps = stepBundle.getParcelableArrayList(ARG_STEPS_LIST);
-            //selectedStepDescription = recipeBundle.getString(ARG_STEP);
-            //selectedStepVideoUrl = recipeBundle.getString(ARG_VIDEO);
-            //mStepDescriptionTv.setText(selectedStepDescription);
+
         }
 
         if (mSteps != null) {
@@ -89,7 +103,7 @@ public class MediaFragment extends Fragment {
         }
 
         initializePlayer(selectedStepVideoUrl);
-        mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.nutella));
+        //mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.nutella));
         return rootView;
 
     }
@@ -97,7 +111,14 @@ public class MediaFragment extends Fragment {
     private void setStepDetail(int id, List<Step> stepList){
 
         selectedStep = stepList.get(id);
+
         selectedStepDescription = selectedStep.getDescription();
+        mStepDescriptionTv.setText(selectedStepDescription);
+
+        selectedStepShortDescription = selectedStep.getShortDescription();
+        mStepShortDescriptionTv.setText(selectedStepShortDescription);
+
+
         if (selectedStep.getVideoURL() != null){
             selectedStepVideoUrl = selectedStep.getVideoURL();
         }else {
@@ -112,7 +133,7 @@ public class MediaFragment extends Fragment {
         LoadControl loadControl = new DefaultLoadControl();
         RenderersFactory renderersFactory = new DefaultRenderersFactory(getContext());
         // Since the method .newSimpleInstance(context, trackSelector, loadControl) is deprecated, we use
-        // .newSimpleInstance(renderersFactory, trackSelector, loadControl);
+        // newSimpleInstance(renderersFactory, trackSelector, loadControl);
         mExoplayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
         mPlayerView.setPlayer(mExoplayer);
         mExoplayer.setPlayWhenReady(playWhenReady);
@@ -150,18 +171,12 @@ public class MediaFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        hideSystemUi();
+
         if ((Util.SDK_INT <= 23 || mExoplayer == null)) {
             initializePlayer(selectedStepVideoUrl);
         }
     }
 
-    private void hideSystemUi() {
-        mPlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-    }
 
     @Override
     public void onPause() {

@@ -35,6 +35,10 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
                 .commit();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public void sendRecipe(Recipe recipe) {
