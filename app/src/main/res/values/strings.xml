@@ -7,4 +7,8 @@
     <string name="prev_tittle_icon">Prev</string>
     <string name="next_tittle_icon">Next</string>
     <string name="back_steps_list_icon">Steps</string>
+    <string name="prev_step_text_btn">Prev Step</string>
+    <string name="next_step_text_btn">Next Step</string>
+    <string name="last_step_toast">This is the last step</string>
+    <string name="first_step_toast">This is the first step</string>
 </resources>

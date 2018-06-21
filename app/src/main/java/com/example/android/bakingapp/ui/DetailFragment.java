@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,9 @@ public class DetailFragment extends Fragment {
 
     @BindView(R.id.step_rv) RecyclerView mRecyclerSteps;
 
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
     Activity mActivity;
     ComunicateFragmentStep comunicateFragmentStep;
 
@@ -51,6 +56,15 @@ public class DetailFragment extends Fragment {
 
         ButterKnife.bind(this, rootView);
         Timber.plant(new Timber.DebugTree());
+
+        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -84,6 +98,8 @@ public class DetailFragment extends Fragment {
                //setArgStep(view);
             }
         });
+
+
 
         return rootView;
     }
