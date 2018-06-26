@@ -108,14 +108,17 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         ButterKnife.bind(this, rootView);
         Timber.plant(new Timber.DebugTree());
 
-        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().onBackPressed();
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(mToolbar);
+            Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().onBackPressed();
+                }
+            });
+        }
+
         final Bundle stepBundle = getArguments();
 
         if (stepBundle != null) {
@@ -133,10 +136,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         mPrevBtn.setOnClickListener(this);
         mNextBtn.setOnClickListener(this);
 
-
-
         return rootView;
-
     }
 
     private void setStepDetail(int id){
@@ -157,7 +157,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         }
         mToolbar.setTitle("Step: " + String.valueOf(id));
         initializePlayer(selectedStepVideoUrl);
-
     }
 
     private void initializePlayer(String mediaUrl){
@@ -167,7 +166,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         RenderersFactory renderersFactory = new DefaultRenderersFactory(getContext());
         // Since the method .newSimpleInstance(context, trackSelector, loadControl) is deprecated, we use
         // newSimpleInstance(renderersFactory, trackSelector, loadControl);
-
         mExoplayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
         mPlayerView.setPlayer(mExoplayer);
         mExoplayer.setPlayWhenReady(playWhenReady);
@@ -181,25 +179,18 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
             Uri mediaUri = Uri.parse(mediaUrl);
             MediaSource mediaSource = buildMediaSource(mediaUri);
             mExoplayer.prepare(mediaSource, true, false);
-
         }
-
-
-
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         checkOrientationMode();
-
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     private MediaSource buildMediaSource(Uri mediaUri) {
@@ -215,7 +206,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
 
         if (Util.SDK_INT > 23) {
             initializePlayer(selectedStepVideoUrl);
-
         }
     }
 
@@ -225,10 +215,8 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
 
         if ((Util.SDK_INT <= 23 || mExoplayer == null)) {
             initializePlayer(selectedStepVideoUrl);
-
         }
     }
-
 
     @Override
     public void onPause() {
@@ -259,10 +247,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
     private void checkOrientationMode(){
         int currentOrientation = getResources().getConfiguration().orientation;
 
-
         if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE){
-            Timber.d("Orientation mode: Landscape " + String.valueOf(currentOrientation));
-                //Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 Objects.requireNonNull(getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -278,17 +263,11 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mPlayerView.setLayoutParams(layoutParams);
 
-
-            //getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
-
         }
         else {
             Timber.d("Orientation mode: Portrait " + String.valueOf(currentOrientation));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                //Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).show();
-                //showSystemUI();
                 Objects.requireNonNull(getActivity()).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
 
             }
             mStepShortDescriptionTv.setVisibility(View.VISIBLE);
@@ -300,16 +279,8 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
             layoutParams.width = 0;
             layoutParams.height = 0;
             mPlayerView.setLayoutParams(layoutParams);
-
-            //getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-
-
-            //showSystemUI();
-
         }
-
     }
-
 
     @Override
     public void onClick(View view) {
@@ -334,9 +305,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getContext(), R.string.last_step_toast, Toast.LENGTH_SHORT).show();
                 }
                     break;
-
         }
-
     }
-
 }

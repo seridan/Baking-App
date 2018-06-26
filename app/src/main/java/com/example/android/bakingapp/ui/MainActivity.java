@@ -6,22 +6,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.android.bakingapp.R;
-import com.example.android.bakingapp.interfaces.CommunicateFragmentRecipe;
-import com.example.android.bakingapp.interfaces.ComunicateFragmentStep;
+import com.example.android.bakingapp.interfaces.CommunicateFragment;
+import com.example.android.bakingapp.model.Ingredients;
 import com.example.android.bakingapp.model.Recipe;
 import com.example.android.bakingapp.model.Step;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CommunicateFragmentRecipe,
-        ComunicateFragmentStep {
+public class MainActivity extends AppCompatActivity implements CommunicateFragment {
 
     private static final String ARG_RECIPE = "recipe";
     private static final String ARG_STEPS_LIST = "stepsList";
     private static final String ARG_STEP_ID = "stepId";
-    DetailFragment detailFragment;
-    MediaFragment mediaFragment;
+    private static final String ARG_INGREDIENTS_LIST = "ingredientsList";
+
+    DetailFragment mDetailFragment;
+    MediaFragment mMediaFragment;
+    IngredientsFragment mIngredientsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,31 +45,47 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
     @Override
     public void sendRecipe(Recipe recipe) {
 
-        detailFragment = new DetailFragment();
+        mDetailFragment = new DetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_RECIPE, recipe);
-        detailFragment.setArguments(bundle);
+        mDetailFragment.setArguments(bundle);
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_list_container, detailFragment)
+                .replace(R.id.fragment_list_container, mDetailFragment)
                 .addToBackStack(null)
                 .commit();
 
     }
 
     @Override
-    public void sendStep(List<Step> stepList, int id) {
-        mediaFragment = new MediaFragment();
+    public void sendFragmentStep(List<Step> stepList, int id) {
+        mMediaFragment = new MediaFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_STEPS_LIST, (ArrayList<? extends Parcelable>) stepList);
         bundle.putInt(ARG_STEP_ID, id);
-        mediaFragment.setArguments(bundle);
+        mMediaFragment.setArguments(bundle);
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_list_container, mediaFragment)
+                .replace(R.id.fragment_list_container, mMediaFragment)
                 .addToBackStack(null)
                 .commit();
+        }
+
+    @Override
+    public void sendFragmentIngredients(List<Ingredients> ingredientsList) {
+
+        mIngredientsFragment = new IngredientsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(ARG_INGREDIENTS_LIST, (ArrayList<? extends Parcelable>) ingredientsList);
+        mIngredientsFragment.setArguments(bundle);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_list_container, mIngredientsFragment)
+                .addToBackStack(null)
+                .commit();
+
     }
 }

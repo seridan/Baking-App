@@ -1,6 +1,7 @@
 package com.example.android.bakingapp.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +30,9 @@ public class DetailFragmentAdapter
 
     }
 
+    @NonNull
     @Override
-    public FragmentDetailViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public FragmentDetailViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.fragment_recipe_list_item_list;
@@ -45,7 +47,7 @@ public class DetailFragmentAdapter
     }
 
     @Override
-    public void onBindViewHolder(FragmentDetailViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FragmentDetailViewHolder holder, int position) {
 
         holder.listItemDetailTv.setText(mStepList.get(position).getShortDescription());
     }

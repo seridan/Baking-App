@@ -2,6 +2,7 @@ package com.example.android.bakingapp.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -11,15 +12,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.adapter.DetailFragmentAdapter;
-import com.example.android.bakingapp.interfaces.ComunicateFragmentStep;
+import com.example.android.bakingapp.interfaces.CommunicateFragment;
+import com.example.android.bakingapp.model.Ingredients;
 import com.example.android.bakingapp.model.Recipe;
 import com.example.android.bakingapp.model.Step;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,15 +36,20 @@ public class DetailFragment extends Fragment {
 
     private Recipe selectedRecipe;
     private List<Step> mListSteps;
+    private List<Ingredients> mListIngredients;
 
 
-    @BindView(R.id.step_rv) RecyclerView mRecyclerSteps;
+    @BindView(R.id.step_rv)
+    RecyclerView mRecyclerSteps;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
+    @BindView(R.id.btn_ingredients)
+    Button mBtnIngredients;
+
     Activity mActivity;
-    ComunicateFragmentStep comunicateFragmentStep;
+    CommunicateFragment mComunicateFragment;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -57,14 +66,17 @@ public class DetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         Timber.plant(new Timber.DebugTree());
 
-        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().onBackPressed();
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(mToolbar);
+            Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().onBackPressed();
+                }
+            });
+        }
+
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -82,37 +94,42 @@ public class DetailFragment extends Fragment {
             //que se le asignó desde el origen.
             selectedRecipe = recipeBundle.getParcelable(ARG_RECIPE);
             if (selectedRecipe != null) {
-                //Si no es null almacenamos el array de steps en la variable mSteps
+                //Si no es null almacenamos la lista de steps en la variable mSteps
                 mListSteps = selectedRecipe.getSteps();
+                //Y ademas almacenamos la lista de ingredientes para luego pasarsela a la clase ingredientFragment
+                mListIngredients = selectedRecipe.getIngredients();
                 //y se la pasamos al adapter mediante el método setStepList de la clase;
                 mDetailFragmentAdapter.setStepList(mListSteps);
             }
         }
 
-        //Activo el evento onClick
+        //Activo el evento onClick del recycler view
         mDetailFragmentAdapter.setOnclickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int id = mListSteps.get(mRecyclerSteps.getChildAdapterPosition(view)).getId();
-                comunicateFragmentStep.sendStep(mListSteps, id);
+                mComunicateFragment.sendFragmentStep(mListSteps, id);
                //setArgStep(view);
             }
         });
 
-
+        //Activo el listener del boton ingredientes para pasarle al fragment ingredientes la lista de ingredientes seleccionada
+        mBtnIngredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mComunicateFragment.sendFragmentIngredients(mListIngredients);
+            }
+        });
 
         return rootView;
     }
-
-
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if(context instanceof Activity) {
             mActivity = (Activity) context;
-            comunicateFragmentStep = (ComunicateFragmentStep) mActivity;
+            mComunicateFragment = (CommunicateFragment) mActivity;
         }
     }
-
 }

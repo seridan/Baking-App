@@ -20,7 +20,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.adapter.MainActivityAdapter;
-import com.example.android.bakingapp.interfaces.CommunicateFragmentRecipe;
+import com.example.android.bakingapp.interfaces.CommunicateFragment;
 import com.example.android.bakingapp.model.Recipe;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -47,7 +47,7 @@ public class RecipeMainFragment extends Fragment {
     @BindView(R.id.recipe_rv) RecyclerView mRecyclerRecipes;
 
     Activity mActivity;
-    CommunicateFragmentRecipe communicateFragmentRecipe;
+    CommunicateFragment communicateFragment;
 
     public RecipeMainFragment() {
     }
@@ -81,7 +81,7 @@ public class RecipeMainFragment extends Fragment {
                 Toast.makeText(getContext(), "ha seleccionado la receta: " + mListRecipe.get
                         (mRecyclerRecipes.getChildAdapterPosition(view)).getRecipeName(), Toast.LENGTH_SHORT).show();
 
-                communicateFragmentRecipe.sendRecipe
+                communicateFragment.sendRecipe
                         (mListRecipe.get(mRecyclerRecipes.getChildAdapterPosition(view)));
             }
         });
@@ -94,7 +94,7 @@ public class RecipeMainFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof Activity) {
             mActivity = (Activity) context;
-            communicateFragmentRecipe = (CommunicateFragmentRecipe) mActivity;
+            communicateFragment = (CommunicateFragment) mActivity;
         }
     }
 
