@@ -40,9 +40,9 @@ public class IngredientFragmentAdapter
 
         float quantity = mIngredientList.get(position).getQuantity();
         String measure = mIngredientList.get(position).getMeasure();
-        String formattedText = quantity + ": " + measure;
+        String formattedText = quantity + " " +  measure + " ";
 
-        holder.mMeasureQuatityLabel.setText(formattedText);
+        holder.mMeasureQuantityLabel.setText(formattedText);
         holder.mIngredientTv.setText(mIngredientList.get(position).getIngredient());
 
     }
@@ -56,7 +56,7 @@ public class IngredientFragmentAdapter
     public class FragmentIngredientViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.measure_quantity_label)
-        TextView mMeasureQuatityLabel;
+        TextView mMeasureQuantityLabel;
 
         @BindView(R.id.ingredient_tv)
         TextView mIngredientTv;

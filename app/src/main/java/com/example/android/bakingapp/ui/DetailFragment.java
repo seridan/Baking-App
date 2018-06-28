@@ -37,6 +37,7 @@ public class DetailFragment extends Fragment {
     private Recipe selectedRecipe;
     private List<Step> mListSteps;
     private List<Ingredients> mListIngredients;
+    private String recipeName;
 
 
     @BindView(R.id.step_rv)
@@ -66,6 +67,7 @@ public class DetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         Timber.plant(new Timber.DebugTree());
 
+        //Implemento la toolbar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(mToolbar);
             Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -96,12 +98,18 @@ public class DetailFragment extends Fragment {
             if (selectedRecipe != null) {
                 //Si no es null almacenamos la lista de steps en la variable mSteps
                 mListSteps = selectedRecipe.getSteps();
-                //Y ademas almacenamos la lista de ingredientes para luego pasarsela a la clase ingredientFragment
+                //Y ademas almacenamos la lista de ingredientes para luego pasarsela a la clase ingredientFragment junto con el nombre
+                //de la receta para ponerla como titulo en la toolbar del fragment ingredientes.
                 mListIngredients = selectedRecipe.getIngredients();
+                recipeName = selectedRecipe.getRecipeName();
+
                 //y se la pasamos al adapter mediante el método setStepList de la clase;
                 mDetailFragmentAdapter.setStepList(mListSteps);
+                mToolbar.setTitle(recipeName);
             }
         }
+
+
 
         //Activo el evento onClick del recycler view
         mDetailFragmentAdapter.setOnclickListener(new View.OnClickListener() {
@@ -117,9 +125,10 @@ public class DetailFragment extends Fragment {
         mBtnIngredients.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mComunicateFragment.sendFragmentIngredients(mListIngredients);
+                mComunicateFragment.sendFragmentIngredients(mListIngredients, recipeName);
             }
         });
+
 
         return rootView;
     }

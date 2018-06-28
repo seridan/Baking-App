@@ -29,13 +29,13 @@ import butterknife.ButterKnife;
 public class IngredientsFragment extends Fragment {
 
     private List<Ingredients> mListIngredient;
+    private String recipeName;
+
     private static final String ARG_INGREDIENTS_LIST = "ingredientsList";
+    private static final String ARG_RECIPE_NAME = "recipe_name";
 
     @BindView(R.id.ingredient_rv)
     RecyclerView mRecyclerIngredient;
-
-    @BindView(R.id.ingredient_label)
-    TextView mIngredientLabel;
 
     @BindView(R.id.ingredient_toolbar)
     Toolbar mIngredientToolbar;
@@ -77,7 +77,9 @@ public class IngredientsFragment extends Fragment {
 
         if (ingredientBundle != null) {
             mListIngredient = ingredientBundle.getParcelableArrayList(ARG_INGREDIENTS_LIST);
+            recipeName = ingredientBundle.getString(ARG_RECIPE_NAME);
             mIngredientFragmentAdapter.setIngredientList(mListIngredient);
+            mIngredientToolbar.setTitle(recipeName + " " + getString(R.string.ingredients_toolbar_title));
         }
 
         return rootView;

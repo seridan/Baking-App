@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
     private static final String ARG_STEPS_LIST = "stepsList";
     private static final String ARG_STEP_ID = "stepId";
     private static final String ARG_INGREDIENTS_LIST = "ingredientsList";
+    private static final String ARG_RECIPE_NAME = "recipe_name";
 
     DetailFragment mDetailFragment;
     MediaFragment mMediaFragment;
@@ -74,11 +75,12 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
         }
 
     @Override
-    public void sendFragmentIngredients(List<Ingredients> ingredientsList) {
+    public void sendFragmentIngredients(List<Ingredients> ingredientsList, String recipeName) {
 
         mIngredientsFragment = new IngredientsFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_INGREDIENTS_LIST, (ArrayList<? extends Parcelable>) ingredientsList);
+        bundle.putString(ARG_RECIPE_NAME, recipeName);
         mIngredientsFragment.setArguments(bundle);
 
         getSupportFragmentManager()

@@ -12,6 +12,6 @@ public interface CommunicateFragment {
 
     void sendFragmentStep(List<Step> stepList, int id);
 
-    void sendFragmentIngredients(List<Ingredients> ingredientsList);
+    void sendFragmentIngredients(List<Ingredients> ingredientsList, String recipeName);
 
 }

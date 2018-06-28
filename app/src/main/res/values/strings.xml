@@ -11,4 +11,6 @@
     <string name="next_step_text_btn">Next Step</string>
     <string name="last_step_toast">This is the last step</string>
     <string name="first_step_toast">This is the first step</string>
+    <string name="ingredients_btn">Ingredients</string>
+    <string name="ingredients_toolbar_title">Ingredients list</string>
 </resources>
