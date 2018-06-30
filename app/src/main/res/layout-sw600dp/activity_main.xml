@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Fragment layout that displays a recipe detail -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_tablet_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:baselineAligned="false"
-    android:orientation="horizontal"
-    tools:context=".ui.MainActivity">
+    android:orientation="horizontal" >
 
-    <fragment
+    <FrameLayout
+        android:id="@+id/fragment_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+    
+    <FrameLayout
         android:id="@+id/master_list_fragment"
-        android:name=""
-        android:layout_width="400dp"
-        android:layout_height="match_parent" />
+        android:name="com.example.android.bakingapp.ui.DetailFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/darker_gray"/>
+
+    <FrameLayout
+        android:id="@+id/master_detail_fragment"
+
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+
+    </FrameLayout>
+
 
 </LinearLayout>

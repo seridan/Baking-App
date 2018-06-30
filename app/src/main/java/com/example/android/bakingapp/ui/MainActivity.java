@@ -4,6 +4,7 @@ import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.interfaces.CommunicateFragment;
@@ -21,20 +22,32 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
     private static final String ARG_STEP_ID = "stepId";
     private static final String ARG_INGREDIENTS_LIST = "ingredientsList";
     private static final String ARG_RECIPE_NAME = "recipe_name";
+    private static final String ARG_TWO_PANE = "isTwoPane";
+    private boolean mTwoPane;
 
     DetailFragment mDetailFragment;
     MediaFragment mMediaFragment;
     IngredientsFragment mIngredientsFragment;
+    RecipeMainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(findViewById(R.id.fragment_tablet_linear_layout) != null){
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
+            if (savedInstanceState != null){
+                return;
+            }
+            }
+
         RecipeMainFragment mainFragment = new RecipeMainFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment_list_container, mainFragment)
+                .add(R.id.fragment_list_container, mainFragment)
                 .commit();
     }
 
@@ -51,28 +64,77 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
         bundle.putParcelable(ARG_RECIPE, recipe);
         mDetailFragment.setArguments(bundle);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_list_container, mDetailFragment)
-                .addToBackStack(null)
-                .commit();
+        if (!mTwoPane) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_list_container, mDetailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            findViewById(R.id.fragment_list_container).setVisibility(View.GONE);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.master_list_fragment, mDetailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
 
     }
 
     @Override
     public void sendFragmentStep(List<Step> stepList, int id) {
-        mMediaFragment = new MediaFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARG_STEPS_LIST, (ArrayList<? extends Parcelable>) stepList);
-        bundle.putInt(ARG_STEP_ID, id);
-        mMediaFragment.setArguments(bundle);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_list_container, mMediaFragment)
-                .addToBackStack(null)
-                .commit();
+       /* mMediaFragment =
+                (MediaFragment) this.getSupportFragmentManager().findFragmentById(R.id.master_detail_fragment);
+
+        if (mMediaFragment != null && mTwoPane) {
+            mMediaFragment.setStepDetail(id);
+        } else {
+
+            mMediaFragment = new MediaFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(ARG_STEPS_LIST, (ArrayList<? extends Parcelable>) stepList);
+            bundle.putInt(ARG_STEP_ID, id);
+            mMediaFragment.setArguments(bundle);
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_list_container, mMediaFragment)
+                    .addToBackStack(null)
+                    .commit();
+
+
+        }*/
+
+
+       mMediaFragment = new MediaFragment();
+       Bundle bundle = new Bundle();
+       bundle.putParcelableArrayList(ARG_STEPS_LIST, (ArrayList<? extends Parcelable>) stepList);
+       bundle.putInt(ARG_STEP_ID, id);
+       bundle.putBoolean(ARG_TWO_PANE, mTwoPane);
+       mMediaFragment.setArguments(bundle);
+
+
+
+
+        if (!mTwoPane) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_list_container, mMediaFragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.master_detail_fragment, mMediaFragment)
+                    .commit();
+
+
         }
+
+    }
+
 
     @Override
     public void sendFragmentIngredients(List<Ingredients> ingredientsList, String recipeName) {
@@ -85,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_list_container, mIngredientsFragment)
+                .add(R.id.fragment_list_container, mIngredientsFragment)
                 .addToBackStack(null)
                 .commit();
 

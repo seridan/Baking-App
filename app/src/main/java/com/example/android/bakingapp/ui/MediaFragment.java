@@ -67,11 +67,13 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
     private String selectedStepShortDescription;
     private String selectedStepVideoUrl;
     private Recipe selectedRecipe;
+    private Boolean isTwoPane;
     private static final String ARG_RECIPE = "recipe";
     private static final String ARG_STEP = "step";
     private static final String ARG_VIDEO = "video";
     private static final String ARG_STEPS_LIST = "stepsList";
     private static final String ARG_STEP_ID = "stepId";
+    private static final String ARG_TWO_PANE = "isTwoPane";
     private boolean playWhenReady;
     private int currentWindow = 0;
     private long playbackPosition = 0;
@@ -125,13 +127,14 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
 
             stepId = stepBundle.getInt(ARG_STEP_ID);
             mSteps = stepBundle.getParcelableArrayList(ARG_STEPS_LIST);
+            isTwoPane = stepBundle.getBoolean(ARG_TWO_PANE);
         }
 
         if (mSteps != null) {
             setStepDetail(stepId);
         }
 
-        checkOrientationMode();
+
 
         mPrevBtn.setOnClickListener(this);
         mNextBtn.setOnClickListener(this);
@@ -139,7 +142,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
-    private void setStepDetail(int id){
+    public void setStepDetail(int id){
 
         selectedStep = mSteps.get(id);
 
@@ -185,12 +188,15 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        checkOrientationMode();
+        if (!isTwoPane) {
+            checkOrientationMode();
+        }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     private MediaSource buildMediaSource(Uri mediaUri) {
@@ -203,6 +209,15 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
+        releasePlayer();
+        if (isTwoPane) {
+            mNextBtn.setVisibility(View.GONE);
+            mPrevBtn.setVisibility(View.GONE);
+        }
+
+        if (!isTwoPane) {
+            checkOrientationMode();
+        }
 
         if (Util.SDK_INT > 23) {
             initializePlayer(selectedStepVideoUrl);
