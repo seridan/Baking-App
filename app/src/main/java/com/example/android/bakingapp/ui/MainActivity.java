@@ -42,32 +42,30 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-
-        setSupportActionBar(mToolBar);
-        ActionBar actionBar = this.getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               recreate();
-            }
-        });
-
-
 
         if(findViewById(R.id.fragment_tablet_linear_layout) != null){
             mTwoPane = true;
+            ButterKnife.bind(this);
+            setSupportActionBar(mToolBar);
+            ActionBar actionBar = this.getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+            mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    findViewById(R.id.fragment_list_container).setVisibility(View.VISIBLE);
+                    onBackPressed();
+                }
+            });
         } else {
             mTwoPane = false;
             if (savedInstanceState != null){
                 return;
             }
-            }
+        }
 
-        RecipeMainFragment mainFragment = new RecipeMainFragment();
+        mainFragment = new RecipeMainFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean(ARG_TWO_PANE, mTwoPane);
         mainFragment.setArguments(bundle);
