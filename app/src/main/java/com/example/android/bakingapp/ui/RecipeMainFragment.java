@@ -2,8 +2,10 @@ package com.example.android.bakingapp.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,6 +32,7 @@ import org.json.JSONArray;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,9 +44,11 @@ public class RecipeMainFragment extends Fragment {
     private RequestQueue mRequestQueue;
     private MainActivityAdapter mMainActivityAdapter;
     private List<Recipe> mListRecipe;
+    private boolean mTwoPane;
+
     private static final String URL_JSON
             = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json#";
-
+    private static final String ARG_TWO_PANE = "isTwoPane";
     @BindView(R.id.recipe_rv) RecyclerView mRecyclerRecipes;
 
     Activity mActivity;
@@ -63,14 +68,26 @@ public class RecipeMainFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         Timber.plant(new Timber.DebugTree());
 
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mRecyclerRecipes.setLayoutManager(layoutManager);
+        final Bundle stepBundle = getArguments();
+
+        if (stepBundle != null) {
+
+            mTwoPane = stepBundle.getBoolean(ARG_TWO_PANE);
+        }
+
+
+        if (mTwoPane) {
+            mRecyclerRecipes.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        } else {
+            mRecyclerRecipes.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        }
         mRecyclerRecipes.setHasFixedSize(true);
         mMainActivityAdapter = new MainActivityAdapter(mListRecipe);
         mRecyclerRecipes.setAdapter(mMainActivityAdapter);
 
-        mRequestQueue = Volley.newRequestQueue(getContext());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mRequestQueue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
+        }
 
         loadJsonData();
 

@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:background="?attr/colorPrimary"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playerView"

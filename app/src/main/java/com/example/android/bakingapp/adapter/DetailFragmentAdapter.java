@@ -24,7 +24,6 @@ public class DetailFragmentAdapter
     private View.OnClickListener mListener;
 
 
-
     public DetailFragmentAdapter(List<Step> stepList) {
         mStepList = stepList;
 
