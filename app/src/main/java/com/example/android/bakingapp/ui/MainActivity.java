@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
         if (!mTwoPane) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.master_detail_fragment, mIngredientsFragment)
+                    .replace(R.id.fragment_list_container, mIngredientsFragment)
                     .addToBackStack(null)
                     .commit();
         } else {
