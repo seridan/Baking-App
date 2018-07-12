@@ -108,4 +108,6 @@ public class Recipe implements Parcelable {
         parcel.writeString(mRecipeImageUrl);
         parcel.writeInt(servings);
     }
+
+
 }
