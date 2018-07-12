@@ -20,4 +20,5 @@
     <string name="ingredients_shared_preference" translatable="false">shared preference ingredients</string>
     <string name="ingredients_list_key" translatable="false">ingredients list</string>
     <string name="recipe_mane_key" translatable="false">recipe name</string>
+    <string name="select_recipe_first_message">First you must select a recipe and it will be shown.</string>
 </resources>

@@ -48,7 +48,11 @@ public class BakingAppWidgetProvider extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_app_widget);
         views.setTextViewText(R.id.appwidget_update_label, mRecipeName);
-        views.setTextViewText(R.id.appwidget_update, TextUtils.join("", mListIngredients));
+        if (mListIngredients != null) {
+            views.setTextViewText(R.id.appwidget_update, TextUtils.join("", mListIngredients));
+        } else {
+            views.setTextViewText(R.id.appwidget_update, (context.getString(R.string.select_recipe_first_message)));
+        }
 
         //Create an Intent to launch MainActivity when clicked
         Intent intent = new Intent(context, MainActivity.class);
