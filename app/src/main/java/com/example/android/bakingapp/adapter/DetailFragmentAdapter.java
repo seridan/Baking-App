@@ -69,7 +69,6 @@ public class DetailFragmentAdapter
     }
 
     public class FragmentDetailViewHolder extends RecyclerView.ViewHolder {
-
         @BindView(R.id.tv_item_detail) TextView listItemDetailTv;
 
         public FragmentDetailViewHolder(View itemView) {
@@ -77,7 +76,6 @@ public class DetailFragmentAdapter
             ButterKnife.bind(this, itemView);
 
         }
-
     }
 
     public void setStepList(List<Step> recipeSteps) {

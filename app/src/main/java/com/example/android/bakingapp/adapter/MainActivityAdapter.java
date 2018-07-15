@@ -72,7 +72,6 @@ public class MainActivityAdapter
             super(itemView);
 
             ButterKnife.bind(this, itemView);
-
         }
     }
 

@@ -43,9 +43,12 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Is in tablet mode when the ragment_tablet_linear_layout view it's exists.
         if(findViewById(R.id.fragment_tablet_linear_layout) != null){
             mTwoPane = true;
+
             ButterKnife.bind(this);
+
             setSupportActionBar(mToolBar);
             ActionBar actionBar = this.getSupportActionBar();
             if (actionBar != null) {
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements CommunicateFragme
                 }
             });
         } else {
+            //If not in tablet mode, continue load the fragment RecipeMainFragment
             mTwoPane = false;
             if (savedInstanceState != null){
                 return;

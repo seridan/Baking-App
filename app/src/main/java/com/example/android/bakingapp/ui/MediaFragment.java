@@ -66,11 +66,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
     private String selectedStepDescription;
     private String selectedStepShortDescription;
     private String selectedStepVideoUrl;
-    private Recipe selectedRecipe;
     private Boolean isTwoPane;
-    private static final String ARG_RECIPE = "recipe";
-    private static final String ARG_STEP = "step";
-    private static final String ARG_VIDEO = "video";
     private static final String ARG_STEPS_LIST = "stepsList";
     private static final String ARG_STEP_ID = "stepId";
     private static final String ARG_TWO_PANE = "isTwoPane";
@@ -134,8 +130,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
             setStepDetail(stepId);
         }
 
-
-
         mPrevBtn.setOnClickListener(this);
         mNextBtn.setOnClickListener(this);
 
@@ -151,7 +145,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
 
         selectedStepShortDescription = selectedStep.getShortDescription();
         mStepShortDescriptionTv.setText(selectedStepShortDescription);
-
 
         if (selectedStep.getVideoURL() != null){
             selectedStepVideoUrl = selectedStep.getVideoURL();

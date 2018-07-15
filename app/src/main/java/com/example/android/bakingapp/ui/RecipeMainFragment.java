@@ -14,9 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
@@ -95,9 +101,6 @@ public class RecipeMainFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getContext(), "ha seleccionado la receta: " + mListRecipe.get
-                        (mRecyclerRecipes.getChildAdapterPosition(view)).getRecipeName(), Toast.LENGTH_SHORT).show();
-
                 communicateFragment.sendRecipe
                         (mListRecipe.get(mRecyclerRecipes.getChildAdapterPosition(view)));
             }
@@ -134,7 +137,10 @@ public class RecipeMainFragment extends Fragment {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("error en orResponse", error.toString());
+
+                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            Toast.makeText(getContext(), R.string.error_connection_message, Toast.LENGTH_LONG).show();
+                        }
                     }
 
                 });

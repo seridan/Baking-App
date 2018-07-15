@@ -72,7 +72,7 @@ public class DetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         Timber.plant(new Timber.DebugTree());
 
-        //Before implement the toolbar, check if the activity associated with the fragment its an isntance of
+        //Before implement the toolbar, check if the activity associated with the fragment its an instance of
         // MainActivity or DebugActivity, since when the test runs get a ClassCastException with AppCompatActivity.
         if (getActivity() instanceof MainActivity) { //
             //If it is not testing then the toolbar will be implemented.
@@ -126,8 +126,7 @@ public class DetailFragment extends Fragment {
             public void onClick(View view) {
                 int id = mListSteps.get(mRecyclerSteps.getChildAdapterPosition(view)).getId();
                 mComunicateFragment.sendFragmentStep(mListSteps, id);
-               //setArgStep(view);
-            }
+                }
         });
 
         //Activo el listener del boton ingredientes para pasarle al fragment ingredientes la lista de ingredientes seleccionada
@@ -137,7 +136,6 @@ public class DetailFragment extends Fragment {
                 mComunicateFragment.sendFragmentIngredients(mListIngredients, recipeName);
             }
         });
-
 
         return rootView;
     }
