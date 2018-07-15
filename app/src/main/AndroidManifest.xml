@@ -13,7 +13,6 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.MainActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
