@@ -25,10 +25,6 @@ import java.util.List;
  */
 public class BakingAppWidgetProvider extends AppWidgetProvider {
 
-    private static final String mSharedPrefFile = "com.example.android.bakingapp";
-    private static final String COUNT_KEY = "count";
-
-
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
@@ -41,9 +37,6 @@ public class BakingAppWidgetProvider extends AppWidgetProvider {
         Type type = new TypeToken<List<Ingredients>>() {}.getType();
         mListIngredients = gson.fromJson(json, type);
         mRecipeName = sharedPreferences.getString(context.getString(R.string.recipe_mane_key), null);
-        /*SharedPreferences prefs = context.getSharedPreferences(mSharedPrefFile, Context.MODE_PRIVATE);
-        int count = prefs.getInt(COUNT_KEY + appWidgetId, 0);
-        count++;*/
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_app_widget);
@@ -82,18 +75,6 @@ public class BakingAppWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-    }
-
-    private static void loadSharedPreference(Context context, List<Ingredients> listIngredients, String recipeName ) {
-
-        SharedPreferences sharedPreferences
-                = context.getSharedPreferences(context.getString(R.string.ingredients_shared_preference), Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString(context.getString(R.string.ingredients_list_key), null);
-        Type type = new TypeToken<List<Ingredients>>() {}.getType();
-        listIngredients = gson.fromJson(json, type);
-        recipeName = sharedPreferences.getString(context.getString(R.string.recipe_mane_key), null);
-
     }
 }
 

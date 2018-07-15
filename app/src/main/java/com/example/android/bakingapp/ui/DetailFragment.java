@@ -72,16 +72,20 @@ public class DetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         Timber.plant(new Timber.DebugTree());
 
-        //Implemento la toolbar
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(mToolbar);
-            Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getActivity().onBackPressed();
-                }
-            });
+        //Before implement the toolbar, check if the activity associated with the fragment its an isntance of
+        // MainActivity or DebugActivity, since when the test runs get a ClassCastException with AppCompatActivity.
+        if (getActivity() instanceof MainActivity) { //
+            //If it is not testing then the toolbar will be implemented.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(mToolbar);
+                Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+                mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+            }
         }
 
 
