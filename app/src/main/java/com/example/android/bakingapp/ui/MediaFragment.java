@@ -2,6 +2,7 @@ package com.example.android.bakingapp.ui;
 
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +51,7 @@ import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 
 import java.util.List;
@@ -66,13 +69,16 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
     private String selectedStepDescription;
     private String selectedStepShortDescription;
     private String selectedStepVideoUrl;
+    private String selectedStepThumbnailUrl;
     private Boolean isTwoPane;
     private static final String ARG_STEPS_LIST = "stepsList";
     private static final String ARG_STEP_ID = "stepId";
     private static final String ARG_TWO_PANE = "isTwoPane";
+    private static final String PLAYER_POSITION = "playerPosition";
+    private static final String PLAY_WHEN_READY = "playWhenReady";
     private boolean playWhenReady;
     private int currentWindow = 0;
-    private long playbackPosition = 0;
+    private long playbackPosition = 0 ;
 
     @BindView(R.id.step_short_description_tv)
     TextView mStepShortDescriptionTv;
@@ -98,6 +104,20 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
     public MediaFragment() {
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Bundle stepBundle = getArguments();
+
+        if (stepBundle != null) {
+
+            stepId = stepBundle.getInt(ARG_STEP_ID);
+            mSteps = stepBundle.getParcelableArrayList(ARG_STEPS_LIST);
+            isTwoPane = stepBundle.getBoolean(ARG_TWO_PANE);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -105,6 +125,11 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
 
         ButterKnife.bind(this, rootView);
         Timber.plant(new Timber.DebugTree());
+
+        if (savedInstanceState != null) {
+            playbackPosition = savedInstanceState.getLong(PLAYER_POSITION);
+            playWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(mToolbar);
@@ -117,15 +142,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
             });
         }
 
-        final Bundle stepBundle = getArguments();
-
-        if (stepBundle != null) {
-
-            stepId = stepBundle.getInt(ARG_STEP_ID);
-            mSteps = stepBundle.getParcelableArrayList(ARG_STEPS_LIST);
-            isTwoPane = stepBundle.getBoolean(ARG_TWO_PANE);
-        }
-
         if (mSteps != null) {
             setStepDetail(stepId);
         }
@@ -136,7 +152,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
-    public void setStepDetail(int id){
+    public void setStepDetail(int id) {
 
         selectedStep = mSteps.get(id);
 
@@ -155,28 +171,45 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         initializePlayer(selectedStepVideoUrl);
     }
 
+
     private void initializePlayer(String mediaUrl){
 
-        TrackSelector trackSelector = new DefaultTrackSelector();
-        LoadControl loadControl = new DefaultLoadControl();
-        RenderersFactory renderersFactory = new DefaultRenderersFactory(getContext());
-        // Since the method .newSimpleInstance(context, trackSelector, loadControl) is deprecated, we use
-        // newSimpleInstance(renderersFactory, trackSelector, loadControl);
-        mExoplayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
-        mPlayerView.setPlayer(mExoplayer);
-        mExoplayer.setPlayWhenReady(playWhenReady);
-        mExoplayer.seekTo(currentWindow, playbackPosition);
+        if(mExoplayer == null) {
+            TrackSelector trackSelector = new DefaultTrackSelector();
+            LoadControl loadControl = new DefaultLoadControl();
+            RenderersFactory renderersFactory = new DefaultRenderersFactory(getContext());
+            // Since the method .newSimpleInstance(context, trackSelector, loadControl) is deprecated, we use
+            // newSimpleInstance(renderersFactory, trackSelector, loadControl);
+            mExoplayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
+            mPlayerView.setPlayer(mExoplayer);
+            mExoplayer.setPlayWhenReady(playWhenReady);
 
-        if (mediaUrl.equals("") || mediaUrl.isEmpty()) {
-            mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_name));
-            mPlayerView.hideController();
-
-        }else {
-            Uri mediaUri = Uri.parse(mediaUrl);
-            MediaSource mediaSource = buildMediaSource(mediaUri);
-            mExoplayer.prepare(mediaSource, true, false);
+            if (mediaUrl.equals("") || mediaUrl.isEmpty()) {
+                mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_name));
+                mPlayerView.hideController();
+            } else {
+                Uri mediaUri = Uri.parse(mediaUrl);
+                MediaSource mediaSource = buildMediaSource(mediaUri);
+                mExoplayer.prepare(mediaSource, true, false);
+            } // if is not null set to playbackposition stored in the bundle.
+            if (playbackPosition != 0) {
+                mExoplayer.seekTo(currentWindow, playbackPosition);
+            }
         }
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(mExoplayer != null) {
+            playbackPosition = mExoplayer.getCurrentPosition();
+            outState.putLong(PLAYER_POSITION, playbackPosition);
+            playWhenReady = mExoplayer.getPlayWhenReady();
+            outState.putBoolean(PLAY_WHEN_READY, playWhenReady);
+        }
+    }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -186,11 +219,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     private MediaSource buildMediaSource(Uri mediaUri) {
 
@@ -202,7 +230,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        releasePlayer();
+
         if (isTwoPane) {
             mNextBtn.setVisibility(View.GONE);
             mPrevBtn.setVisibility(View.GONE);
@@ -222,7 +250,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         super.onResume();
 
         if ((Util.SDK_INT <= 23 || mExoplayer == null)) {
-            initializePlayer(selectedStepVideoUrl);
+           initializePlayer(selectedStepVideoUrl);
         }
     }
 
@@ -298,6 +326,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
                 releasePlayer();
                 if (stepId > 0){
                     stepId--;
+                    playbackPosition = 0; //set at the beginning of the video when clicked.
                     setStepDetail(stepId);
                     } else {
                     Toast.makeText(getContext(), R.string.first_step_toast, Toast.LENGTH_SHORT).show();
@@ -308,6 +337,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
                 releasePlayer();
                 if (stepId +1 < mSteps.size()){
                     stepId++;
+                    playbackPosition = 0; //set at the beginning of the video when clicked.
                     setStepDetail(stepId);
                     } else {
                     Toast.makeText(getContext(), R.string.last_step_toast, Toast.LENGTH_SHORT).show();
