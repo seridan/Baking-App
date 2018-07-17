@@ -98,6 +98,9 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.btn_prev)
     Button mPrevBtn;
 
+    @BindView(R.id.media_image)
+    ImageView mImageView;
+
     private SimpleExoPlayer mExoplayer;
 
 
@@ -167,8 +170,43 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
         }else {
             selectedStepVideoUrl = selectedStep.getThumbnailURL();
         }
-        mToolbar.setTitle("Step: " + String.valueOf(id));
-        initializePlayer(selectedStepVideoUrl);
+
+        if (!selectedStep.getThumbnailURL().endsWith(".mp4")){
+            selectedStepThumbnailUrl = selectedStep.getThumbnailURL();
+            getImageFromUrl(selectedStepThumbnailUrl);
+        }
+
+            mToolbar.setTitle("Step: " + String.valueOf(id));
+            initializePlayer(selectedStepVideoUrl);
+        }
+
+    public void getImageFromUrl (String url){
+
+        if (url != null && !url.isEmpty() && !url.contains("")){
+            Picasso.with(getContext())
+                    .load(url)
+                    .into(mImageView);
+        } else {
+            Picasso.with(getContext())
+                    .load(R.drawable.recipe)
+                    .into(mImageView);
+        }
+
+       /* if (selectedStep.getVideoURL().endsWith(".mp4")) {
+            selectedStepVideoUrl = selectedStep.getVideoURL();
+        } else if (selectedStep.getThumbnailURL().endsWith(".mp4")) {
+            selectedStepVideoUrl = selectedStep.getThumbnailURL();
+        } else {
+            if (!selectedStep.getThumbnailURL().endsWith(".mp4")){
+                selectedStepThumbnailUrl = selectedStep.getThumbnailURL();
+                getImageFromUrl(selectedStepThumbnailUrl);
+            }else if (!selectedStep.getVideoURL().endsWith(".mp4")){
+                selectedStepThumbnailUrl = selectedStep.getVideoURL();
+                getImageFromUrl(selectedStepThumbnailUrl);
+            }
+        }*/
+
+
     }
 
 

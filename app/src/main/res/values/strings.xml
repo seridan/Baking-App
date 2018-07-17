@@ -27,4 +27,5 @@
     <!-- No internet connection message -->
     <string name="error_connection_message">Unable to connect with the server. Check your internet
         connection and restart the application.</string>
+    <string name="imageViewDescription">Thumbnail image</string>
 </resources>
