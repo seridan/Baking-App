@@ -191,22 +191,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener {
                     .load(R.drawable.recipe)
                     .into(mImageView);
         }
-
-       /* if (selectedStep.getVideoURL().endsWith(".mp4")) {
-            selectedStepVideoUrl = selectedStep.getVideoURL();
-        } else if (selectedStep.getThumbnailURL().endsWith(".mp4")) {
-            selectedStepVideoUrl = selectedStep.getThumbnailURL();
-        } else {
-            if (!selectedStep.getThumbnailURL().endsWith(".mp4")){
-                selectedStepThumbnailUrl = selectedStep.getThumbnailURL();
-                getImageFromUrl(selectedStepThumbnailUrl);
-            }else if (!selectedStep.getVideoURL().endsWith(".mp4")){
-                selectedStepThumbnailUrl = selectedStep.getVideoURL();
-                getImageFromUrl(selectedStepThumbnailUrl);
-            }
-        }*/
-
-
     }
 
 
